@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Infrastructure.Persistence.Entities;
 
 namespace Domain.Entities;
 

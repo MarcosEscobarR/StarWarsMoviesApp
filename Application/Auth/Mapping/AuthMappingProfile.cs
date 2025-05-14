@@ -2,11 +2,11 @@ using Application.Auth.DTOs;
 using AutoMapper;
 using Domain.Entities;
 
-namespace Application.Mapping;
+namespace Application.Auth.Mapping;
 
-public class MappingProfile: Profile
+public class AuthMappingProfile: Profile
 {
-    public MappingProfile()
+    public AuthMappingProfile()
     {
         CreateMap<RegisterUserRequest, User>();
         CreateMap<User, LoginUserResponse>();

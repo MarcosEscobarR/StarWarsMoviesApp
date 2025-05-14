@@ -20,14 +20,14 @@ public class ResultBuilder
     {
         return new ResultBase<T>(default, statusCode, false, message);
     }
-    public static ResultBase IsNotFound( int statusCode = 404, string message = "")
+    public static ResultBase IsNotFound( string message = "", int statusCode = 404)
     {
         return new ResultBase(statusCode, false, message);
     }
 
-    public static ResultBase<T> IsNotFound<T>(T data, int statusCode = 404, string message = "")
+    public static ResultBase<T> IsNotFound<T>(string message = "", int statusCode = 404 )
     {
-        return new ResultBase<T>(data, statusCode, false, message);
+        return new ResultBase<T>(default, statusCode, false, message);
     }
     
     public static ResultBase StatusCode(int statusCode, string message = "")

@@ -1,12 +1,14 @@
+using Application.Auth.Mapping;
 using Application.Auth.Services;
-using Application.Mapping;
+using Application.Movies.Services;
 using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<AuthService>();
-builder.Services.AddAutoMapper(typeof(MappingProfile));  
+builder.Services.AddScoped<MoviesServices>();
+builder.Services.AddAutoMapper(typeof(AuthMappingProfile));  
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddControllers();

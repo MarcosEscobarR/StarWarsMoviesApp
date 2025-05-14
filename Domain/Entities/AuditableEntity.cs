@@ -1,4 +1,4 @@
-namespace Infrastructure.Persistence.Entities;
+namespace Domain.Entities;
 
 public class AuditableEntity
 {

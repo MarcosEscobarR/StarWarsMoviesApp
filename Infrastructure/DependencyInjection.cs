@@ -15,7 +15,9 @@ public static class DependencyInjection
         
         services.AddDbContext<AppDbContext>(options =>
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+        
         services.AddScoped<IAuthRepository, AuthRepository>();
+        services.AddScoped<IMovieRepository, MoviesRepository>();
         return services;
     }
 }

@@ -1,38 +1,46 @@
+using API.Extensions;
+using Application.Movies.DTOs;
+using Application.Movies.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class MoviesController: ControllerBase
+public class MoviesController(MoviesServices moviesServices) : ControllerBase
 {
     [HttpGet]
-    public Task<IActionResult> GetMovies()
+    public async Task<IActionResult> GetMovies(CancellationToken cancellationToken)
     {
-        return Task.FromResult<IActionResult>(Ok("List of movies"));
+        var result = await moviesServices.GetAll(cancellationToken);
+        return result.ToActionResult();
     }
     
-    [HttpGet("{id}")]
-    public Task<IActionResult> GetMovie(int id)
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetMovie(Guid id, CancellationToken cancellation)
     {
-        return Task.FromResult<IActionResult>(Ok($"Details of movie with ID {id}"));
+        var result = await moviesServices.GetById(id, cancellation);
+        return result.ToActionResult();
     }
     
     [HttpPost]
-    public Task<IActionResult> AddMovie()
+    public async Task<IActionResult> AddMovie(MovieRequest request, CancellationToken cancellation)
     {
-        return Task.FromResult<IActionResult>(Ok("Movie added successfully"));
+        var result = await moviesServices.Create(request, CancellationToken.None);
+        return result.ToActionResult();
     }
     
-    [HttpPut("{id}")]
-    public Task<IActionResult> UpdateMovie(int id)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateMovie(Guid id, MovieRequest request, CancellationToken cancellation)
     {
-        return Task.FromResult<IActionResult>(Ok($"Movie with ID {id} updated successfully"));
+        var result = await moviesServices.Update(id, request, CancellationToken.None);
+        return result.ToActionResult();
     }
     
-    [HttpDelete("{id}")]
-    public Task<IActionResult> DeleteMovie(int id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteMovie(Guid id, CancellationToken cancellation)
     {
-        return Task.FromResult<IActionResult>(Ok($"Movie with ID {id} deleted successfully"));
+        var result = await moviesServices.Delete(id, cancellation);
+        return result.ToActionResult();
     }
 }
