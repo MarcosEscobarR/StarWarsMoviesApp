@@ -1,3 +1,4 @@
+using Domain.Entities;
 using Infrastructure.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 

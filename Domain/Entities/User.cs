@@ -1,9 +1,19 @@
 using System.ComponentModel.DataAnnotations;
+using Infrastructure.Persistence.Entities;
 
-namespace Infrastructure.Persistence.Entities;
+namespace Domain.Entities;
 
 public class User : AuditableEntity
 {
+    public User(string name, string lastName, string email, string password)
+    {
+        Name = name;
+        LastName = lastName;
+        Email = email;
+        Password = password;
+    }
+    
+    [Key]
     public Guid Id { get; set; }
     [MaxLength(20)]
     public string Name { get; set; }
@@ -17,4 +27,5 @@ public class User : AuditableEntity
     [MaxLength(15)]
     [MinLength(8)]
     public string Password { get; set; }
+    
 }

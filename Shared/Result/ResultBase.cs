@@ -8,7 +8,7 @@ public class ResultBase(int statusCode, bool isSuccess, string message ) : IResu
     public object? Data { get; } = null;
 }
 
-public class ResultBase<TResponse>(TResponse data, int statusCode = 200, bool isSuccess = true, string message = "")
+public class ResultBase<TResponse>(TResponse? data = default, int statusCode = 200, bool isSuccess = true, string message = "")
     : IResultBase
 {
     public bool IsSuccess { get; } = isSuccess;

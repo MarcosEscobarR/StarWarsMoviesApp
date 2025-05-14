@@ -2,8 +2,8 @@ namespace Shared.Result;
 
 public interface IResultBase
 {
-    internal bool IsSuccess { get; }
-    internal string Message { get; }
-    internal int StatusCode { get; }
-    internal object? Data { get; }
+    public bool IsSuccess { get; }
+    public string Message { get; }
+    public int StatusCode { get; }
+    public object? Data { get; }
 }

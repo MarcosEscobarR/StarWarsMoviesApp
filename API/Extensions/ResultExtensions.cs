@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Shared.Result;
 
-namespace Shared.Result;
+namespace API.Extensions;
 
 public static class ResultExtensions
 {

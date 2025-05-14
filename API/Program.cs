@@ -1,8 +1,13 @@
+using Application.Auth.Services;
+using Application.Mapping;
 using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));  
+
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
