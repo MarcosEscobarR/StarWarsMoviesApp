@@ -1,7 +1,9 @@
 using Application.Auth.Mapping;
 using Application.Auth.Services;
+using Application.Auth.Validators;
 using Application.Movies.Services;
 using Domain.Entities;
+using FluentValidation.AspNetCore;
 using Hangfire;
 using Infrastructure;
 using Infrastructure.Jobs;
@@ -18,7 +20,11 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddFluentValidation(fv =>
+    {
+        fv.RegisterValidatorsFromAssemblyContaining<RegisterUserRequestValidator>();
+    });;
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opts =>

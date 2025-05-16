@@ -12,6 +12,24 @@ public class AppDbContext :DbContext
     {
     }
 
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        var entities = ChangeTracker.Entries<AuditableEntity>();
+        foreach (var entity in entities)
+        {
+            if (entity.State == EntityState.Added)
+            {
+                entity.Entity.CreatedAt = DateTime.UtcNow;
+            }
+
+            if (entity.State == EntityState.Modified)
+            {
+                entity.Entity.UpdatedAt = DateTime.UtcNow;
+            }
+        }
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
