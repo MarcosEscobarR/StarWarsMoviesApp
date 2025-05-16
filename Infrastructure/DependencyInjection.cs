@@ -1,5 +1,6 @@
 using Domain.Interfaces;
 using Infrastructure.Authentication;
+using Infrastructure.Jobs;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ public static class DependencyInjection
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
         services.AddAuthenticationInfrastructure(configuration);
+        services.AddHangfireConfiguration(configuration);
         
         services.AddScoped<IAuthRepository, AuthRepository>();
         services.AddScoped<IMovieRepository, MoviesRepository>();

@@ -23,7 +23,6 @@ public class AuthService(IAuthRepository authRepository, IJwtTokenGenerator jwtT
                 return ResultBuilder.IsFailure<RegisterUserResponse>("User creation failed");
             }
             var response = mapper.Map<RegisterUserResponse>(result);
-            // return ResultBuilder.IsOk(new RegisterUserResponse(result.Id, result.Email, result.FullName));
             return ResultBuilder.IsOk(response);
         }
         

@@ -2,7 +2,9 @@ using Application.Auth.Mapping;
 using Application.Auth.Services;
 using Application.Movies.Services;
 using Domain.Entities;
+using Hangfire;
 using Infrastructure;
+using Infrastructure.Jobs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 
@@ -47,7 +49,7 @@ builder.Services.AddSwaggerGen(opts =>
 });
 var app = builder.Build();
 
-
+app.UseHangfireDashboard("/jobs");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -61,5 +63,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var scheduler = scope.ServiceProvider.GetRequiredService<HangfireJobScheduler>();
+    scheduler.ScheduleJobs();
+}
 
 app.Run();
