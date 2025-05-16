@@ -8,7 +8,6 @@ namespace Application.Movies.Services;
 
 public class MoviesServices(IMovieRepository movieRepository, IMapper mapper)
 {
-
     public async Task<ResultBase<List<MovieResponse>>> GetAll(CancellationToken cancellation)
     {
         try

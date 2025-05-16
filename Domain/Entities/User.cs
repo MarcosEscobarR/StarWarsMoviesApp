@@ -14,6 +14,7 @@ public class User : AuditableEntity
     
     [Key]
     public Guid Id { get; set; }
+    
     [MaxLength(20)]
     public string Name { get; set; }
     
@@ -23,8 +24,18 @@ public class User : AuditableEntity
     [MaxLength(30)]
     public string Email { get; set; }
     
-    [MaxLength(15)]
-    [MinLength(8)]
+    [MaxLength(255)]
     public string Password { get; set; }
+
+    public UserRole Role { get; set; } = UserRole.User;
+
+    public string FullName => $"{Name} {LastName}";
     
+    
+}
+
+public enum UserRole
+{
+    Admin,
+    User
 }

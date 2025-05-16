@@ -17,9 +17,12 @@ public class AppDbContext :DbContext
         base.OnModelCreating(modelBuilder);
         
         modelBuilder.Entity<Movie>()
-            .HasQueryFilter(a => a.DeletedAt == null); 
-        
-        modelBuilder.Entity<User>()
             .HasQueryFilter(a => a.DeletedAt == null);
+
+        modelBuilder.Entity<User>()
+            .HasQueryFilter(a => a.DeletedAt == null)
+            .HasIndex(u => u.Email)
+            .IsUnique();
+
     }
 }

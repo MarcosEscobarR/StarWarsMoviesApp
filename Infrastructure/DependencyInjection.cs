@@ -1,4 +1,5 @@
 using Domain.Interfaces;
+using Infrastructure.Authentication;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,8 @@ public static class DependencyInjection
         
         services.AddDbContext<AppDbContext>(options =>
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+        services.AddAuthenticationInfrastructure(configuration);
         
         services.AddScoped<IAuthRepository, AuthRepository>();
         services.AddScoped<IMovieRepository, MoviesRepository>();

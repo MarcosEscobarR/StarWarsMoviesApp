@@ -1,27 +1,35 @@
 using Application.Auth.DTOs;
+using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Shared.Result;
 
 namespace Application.Auth.Services;
 
-public class AuthService(IAuthRepository authRepository, IMapper mapper)
+public class AuthService(IAuthRepository authRepository, IJwtTokenGenerator jwtTokenGenerator, IMapper mapper, IPasswordHasher<User> passwordHasher)
 {
-    public async Task<ResultBase<User>> RegisterUser(RegisterUserRequest request)
+    public async Task<ResultBase<RegisterUserResponse>> RegisterUser(RegisterUserRequest request)
     {
         try
         {
             var user = mapper.Map<User>(request);
+            user.Password = passwordHasher.HashPassword(user, request.Password);
+            
             var result = await authRepository.CreateUser(user);
-            return result is null 
-                ? ResultBuilder.IsFailure<User>("User creation failed") 
-                : ResultBuilder.IsOk(result);
+            if (result is null)
+            {
+                return ResultBuilder.IsFailure<RegisterUserResponse>("User creation failed");
+            }
+            var response = mapper.Map<RegisterUserResponse>(result);
+            // return ResultBuilder.IsOk(new RegisterUserResponse(result.Id, result.Email, result.FullName));
+            return ResultBuilder.IsOk(response);
         }
         
         catch (Exception e)
         {
-            return ResultBuilder.IsFailure<User>("An error occurred while creating the user: " + e.Message);
+            return ResultBuilder.IsFailure<RegisterUserResponse>("An error occurred while creating the user: " + e.Message);
         }
     }
 
@@ -35,13 +43,23 @@ public class AuthService(IAuthRepository authRepository, IMapper mapper)
                 return ResultBuilder.IsFailure<LoginUserResponse>("User not found");
             }
             
-            // Here you would typically check the password and generate a token
-            var token = "GeneratedToken";
+            if (!VerifyPassword(user, request.Password))
+            {
+                return ResultBuilder.IsFailure<LoginUserResponse>("Invalid password");
+            }
+            
+            var token = jwtTokenGenerator.GenerateToken(user);
             return ResultBuilder.IsOk(new LoginUserResponse(token));
         }
         catch (Exception e)
         {
             return ResultBuilder.IsFailure<LoginUserResponse>("An error occurred while logging in: " + e.Message);
         }
+    }
+    
+    private bool VerifyPassword(User user,string password)
+    {
+        var result = passwordHasher.VerifyHashedPassword(user, user.Password, password);   
+        return result == PasswordVerificationResult.Success;
     }
 }

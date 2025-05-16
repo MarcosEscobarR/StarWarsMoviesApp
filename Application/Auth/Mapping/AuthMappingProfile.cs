@@ -9,6 +9,9 @@ public class AuthMappingProfile: Profile
     public AuthMappingProfile()
     {
         CreateMap<RegisterUserRequest, User>();
+        CreateMap<User, RegisterUserResponse>();
+        
+        
         CreateMap<User, LoginUserResponse>();
     }
 }
