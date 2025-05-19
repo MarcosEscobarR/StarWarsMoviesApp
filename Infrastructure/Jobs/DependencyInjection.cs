@@ -15,7 +15,7 @@ public static class DependencyInjection
         services.AddScoped<HangfireJobScheduler>();
         
         
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration.GetConnectionString("HangfireConnection");
         services.AddHangfire(config =>
         {
             config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)

@@ -1,3 +1,4 @@
+using System.Reflection;
 using Application.Auth.Mapping;
 using Application.Auth.Services;
 using Application.Auth.Validators;
@@ -13,8 +14,8 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<MoviesServices>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IMoviesServices,MoviesServices>();
 builder.Services.AddAutoMapper(typeof(AuthMappingProfile));
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
@@ -29,6 +30,10 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opts =>
 {
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    opts.IncludeXmlComments(xmlPath);
+    
     opts.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
         Name = "Authorization",
@@ -77,3 +82,5 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+public partial class Program { }

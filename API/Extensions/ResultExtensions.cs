@@ -5,25 +5,38 @@ namespace API.Extensions;
 
 public static class ResultExtensions
 {
-    public static IActionResult ToActionResult(this IResultBase result)
+    public static IActionResult ToActionResult<T>(this ResultBase<T> result)
     {
-        var payload = new
-        {
-            result.StatusCode,
-            result.Message,
-            result.Data
-        };
-        
         if (result.IsSuccess)
         {
-            return new OkObjectResult(payload);
+            return new OkObjectResult(result);
         }
-        
+
         return result.StatusCode switch
         {
-            400 => new BadRequestObjectResult(payload),
-            404 => new NotFoundObjectResult(payload),
-            _ => new ObjectResult(payload) { StatusCode = result.StatusCode }
+            400 => new BadRequestObjectResult(result),
+            404 => new NotFoundObjectResult(result),
+            _ => new ObjectResult(result) { StatusCode = result.StatusCode }
+        };
+    }
+    
+    public static IActionResult ToActionResult(this ResultBase result)
+    {
+        if (result.IsSuccess)
+        {
+            return result.StatusCode switch
+            {
+                200 => new OkObjectResult(result),
+                201 => new CreatedResult(string.Empty, result),
+                _ => new ObjectResult(result) { StatusCode = result.StatusCode }
+            };
+        }
+
+        return result.StatusCode switch
+        {
+            400 => new BadRequestObjectResult(result),
+            404 => new NotFoundObjectResult(result),
+            _ => new ObjectResult(result) { StatusCode = result.StatusCode }
         };
     }
 }

@@ -8,12 +8,18 @@ using Shared.Result;
 
 namespace Application.Auth.Services;
 
-public class AuthService(IAuthRepository authRepository, IJwtTokenGenerator jwtTokenGenerator, IMapper mapper, IPasswordHasher<User> passwordHasher)
+public class AuthService(IAuthRepository authRepository, IJwtTokenGenerator jwtTokenGenerator, IMapper mapper, IPasswordHasher<User> passwordHasher) : IAuthService
 {
     public async Task<ResultBase<RegisterUserResponse>> RegisterUser(RegisterUserRequest request)
     {
         try
         {
+            var existingUser = await authRepository.GetUserBy(u => u.Email == request.Email);
+            if (existingUser is not null)
+            {
+                return ResultBuilder.IsFailure<RegisterUserResponse>("Email already in use");
+            }
+            
             var user = mapper.Map<User>(request);
             user.Password = passwordHasher.HashPassword(user, request.Password);
             
@@ -22,6 +28,7 @@ public class AuthService(IAuthRepository authRepository, IJwtTokenGenerator jwtT
             {
                 return ResultBuilder.IsFailure<RegisterUserResponse>("User creation failed");
             }
+            
             var response = mapper.Map<RegisterUserResponse>(result);
             return ResultBuilder.IsOk(response);
         }

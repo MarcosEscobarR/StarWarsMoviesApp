@@ -6,7 +6,7 @@ using Shared.Result;
 
 namespace Application.Movies.Services;
 
-public class MoviesServices(IMovieRepository movieRepository, IMapper mapper)
+public class MoviesServices(IMovieRepository movieRepository, IMapper mapper) : IMoviesServices
 {
     public async Task<ResultBase<List<MovieResponse>>> GetAll(CancellationToken cancellation)
     {
@@ -44,7 +44,7 @@ public class MoviesServices(IMovieRepository movieRepository, IMapper mapper)
         {
             var movie = mapper.Map<Movie>(movieRequest);
             var createdMovie = await movieRepository.Create(movie, cancellation);
-            return ResultBuilder.IsOk(mapper.Map<MovieResponse>(createdMovie));
+            return ResultBuilder.StatusCode( mapper.Map<MovieResponse>(createdMovie), 201);
         }
         catch (Exception e)
         {

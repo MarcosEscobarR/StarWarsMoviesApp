@@ -32,11 +32,11 @@ public class ResultBuilder
     
     public static ResultBase StatusCode(int statusCode, string message = "")
     {
-        return new ResultBase(statusCode, false, message);
+        return new ResultBase(statusCode, true, message);
     }
     
     public static ResultBase<T> StatusCode<T>(T data, int statusCode, string message = "")
     {
-        return new ResultBase<T>( data,statusCode, false, message);
+        return new ResultBase<T>( data,statusCode, true, message);
     }
 }
