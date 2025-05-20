@@ -1,0 +1,10 @@
+bin/
+obj/
+.vscode/
+.idea/
+**/*.csproj.user
+*.suo
+*.user
+*.cache
+*.log
+*.vs/

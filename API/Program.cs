@@ -8,10 +8,18 @@ using FluentValidation.AspNetCore;
 using Hangfire;
 using Infrastructure;
 using Infrastructure.Jobs;
+using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
 
 // Add services to the container.
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -58,17 +66,24 @@ builder.Services.AddSwaggerGen(opts =>
         }
     });
 });
-var app = builder.Build();
 
-app.UseHangfireDashboard("/jobs");
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+var app = builder.Build();
+// Ejecutar migraciones al iniciar
+using (var scope = app.Services.CreateScope())
 {
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>(); 
+    dbContext.Database.Migrate();
+}
+app.UseHangfireDashboard("/jobs", new DashboardOptions
+{
+    Authorization = new[] { new DashboardAuthorizationFilter() }
+});// Configure the HTTP request pipeline.
+Console.WriteLine(app.Environment.EnvironmentName);
+
+    Console.WriteLine("Is Staging");
     app.UseSwagger();
     app.UseSwaggerUI();
-}
 
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

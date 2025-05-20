@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Stage
+      - ASPNETCORE_URLS=http://+:5001
+      - ConnectionStrings__DefaultConnection=server=db1;user=root;password=root;database=app_db;Allow User Variables=True;Allow Zero Datetime=True;Convert Zero Datetime=True;Treat Tiny As Boolean=False;UseAffectedRows=True;AllowPublicKeyRetrieval=True;SslMode=None
+      - ConnectionStrings__HangfireConnection=server=db2;user=root;password=root;database=hangfire_db;Allow User Variables=True;Allow Zero Datetime=True;Convert Zero Datetime=True;Treat Tiny As Boolean=False;UseAffectedRows=True;AllowPublicKeyRetrieval=True;SslMode=None
+    depends_on:
+      - db1
+      - db2
+
+  db1:
+    image: mysql:8.0
+    container_name: mysql-appdb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - db1_data:/var/lib/mysql
+
+  db2:
+    image: mysql:8.0
+    container_name: mysql-hangfire
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hangfire_db
+    ports:
+      - "3308:3306"
+    volumes:
+      - db2_data:/var/lib/mysql
+
+volumes:
+  db1_data:
+  db2_data:
